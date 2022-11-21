@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//Criar tabelas = model (modo generico representacao)
+model Pool {
+  id        String   @id @default(cuid()) //@id -> chave primaria, @default -> cuuid() -> chaves geradas automaticamente (cuiid (menor) ou uuid)
+  title     String
+  code      String   @unique //valor único, nao pode repetir
+  createdAt DateTime @default(now())
+}
+
+// DEVEMOS EXECUTAR -> npx prisma migrate dev 
+// -> vai pedir nome para, para saber qual versao da migracao/tabela (descrevendo o que acoes foi feita)
+// PARA poder verficar e criar nova tabela
+
+// para aceder as tabelas criadas usamos prisma studio -> npx prisma studio
