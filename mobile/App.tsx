@@ -24,10 +24,15 @@ import { StatusBar } from 'expo-status-bar'
 
 import { Center, NativeBaseProvider, Text } from 'native-base'
 
+/**
+ * Importing custom theme to use with Native-base
+ */
+import { THEME } from './src/styles/theme'
+
 export default function App() {
   return (
-    <NativeBaseProvider>
-      <Center flex={1} bgColor={'fuchsia.400'} alignItems="center">
+    <NativeBaseProvider theme={THEME}>
+      <Center flex={1} bgColor="gray.900" alignItems="center">
         <Text color="black" fontSize={24}>
           Hello World!
         </Text>
