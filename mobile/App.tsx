@@ -6,28 +6,33 @@
  * ira aparecer alerta para typescript e install dependências par o typescript
  */
 
+/**
+ * Vamos usar NativeBase library (= react-native -> mais desenvolvido)
+ * - componentes de layout
+ * - temas, elementos, etc...
+ *
+ *  como: Box, VStack, Text, Input... etc :D
+ *
+ *  npm install native-base
+ *  expo install react-native-svg@12.1.1
+ *  expo install react-native-safe-area-context@3.3.2
+ *
+ *  <NativeBaseProvider> -> Igual Context que fornece todas as informações para usar native-base na nossa app
+ */
+
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
+
+import { Center, NativeBaseProvider, Text } from 'native-base'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hello World!</Text>
-      <Text style={styles.title}>Hello World!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NativeBaseProvider>
+      <Center flex={1} bgColor={'fuchsia.400'} alignItems="center">
+        <Text color="black" fontSize={24}>
+          Hello World!
+        </Text>
+        <StatusBar style="auto" />
+      </Center>
+    </NativeBaseProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    color: 'white',
-    fontSize: 24,
-  },
-})
