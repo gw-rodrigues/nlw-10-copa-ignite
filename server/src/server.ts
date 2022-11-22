@@ -52,7 +52,7 @@ async function bootstrap() {
       /* findMany = select */
       const count = await prisma.pool.count()
 
-      return { count: 0 }
+      return { count }
     },
   )
 
