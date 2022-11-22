@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+//depois criar generator executar "npx prisma generate" para criar o diagrama da database
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
