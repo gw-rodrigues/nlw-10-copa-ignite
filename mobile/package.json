@@ -13,12 +13,15 @@
     "@types/react-native": "~0.70.6",
     "expo": "~47.0.7",
     "expo-status-bar": "~1.4.2",
+    "native-base": "^3.4.22",
     "react": "18.1.0",
+    "react-dom": "18.1.0",
     "react-native": "0.70.5",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "react-native-svg": "13.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.19.3"
   },
   "private": true
 }
