@@ -13,25 +13,51 @@
  *
  * .env -> contém local da database
  * schema.prisma -> podemos criar as tabelas/models (continuação código)
+ *
+ * npm i prisma-erd-generator @mermaid-js/mermaid-cli -D ->  Prisma ERD: Criação de diagramas da database é usa mermaid. | Mermaid ferramenta criação de diagramas.
  */
 
 /**
  * Fastify is a web framework highly focused on providing the best developer experience with the least overhead and a
  * powerful plugin architecture, inspired by Hapi and Express.
+ *
+ * npm i @fastify/cors -> mecanismo de segurança, caso nao tiver o cors o frontend nao conseguira acessar o backend.
  */
 import Fastify from 'fastify'
+import cors from '@fastify/cors'
+
+/** Vantagem de utilizar prisma, ter inteligencia de auto-complete e ajuda a fazer as queries e utilização das tabelas/models. */
+/** import prisma client */ /** Iniciar o prisma client para conectar com database */
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient({
+  log: ['query'], //print terminar log todas queries realizadas
+})
 
 /** Alguns frameworks usam nome da função como bootstrap - primeira coisa ser executada na app */
 async function bootstrap() {
   /** agora vamos criar nosso servidor */
   const fastify = Fastify({ logger: true })
 
-  /** Adicionar as nossa rotas */
-  fastify.get('/pools/count', () => {
-    return { count: 0 }
+  //Adicionar o cors ao fastify para liberar acesso
+  await fastify.register(cors, {
+    origin: true, //origin : true indica que qualquer app externa possa acessar no backend/server. Melhor o dominio: www.rocketseat.com
   })
 
-  await fastify.listen({ port: 3333 })
+  /** Adicionar as nossa rotas */
+  fastify.get(
+    '/pools/count',
+    /** todas queries do prisma demoram, sao externas, sao uma promise, function tem de ser async */
+    async () => {
+      /* findMany = select */
+      const count = await prisma.pool.count()
+
+      return { count: 0 }
+    },
+  )
+
+  //Para funcionar na web e mobile, em mobile (android, etc) devemos adicionar o host.
+  await fastify.listen({ port: 3333, host: '0.0.0.0' })
 }
 
 bootstrap()
