@@ -22,10 +22,10 @@ model Pool {
   code      String   @unique //valor único, nao pode repetir
   createdAt DateTime @default(now())
 
-  Participants Participant[] //Chave entrangeira
+  participants Participant[] //Chave entrangeira
 
-  userId String? //relacionamentos entre tabelas, "?" -> significa que pode ser null
-  owner  User?   @relation(fields: [userId], references: [id])
+  ownerId String? //relacionamentos entre tabelas, "?" -> significa que pode ser null
+  owner   User?   @relation(fields: [ownerId], references: [id])
 }
 
 // DEVEMOS EXECUTAR -> npx prisma migrate dev 
@@ -37,10 +37,10 @@ model Pool {
 model Participant {
   id String @id @default(cuid())
 
-  Guesses Guess[]
+  guesses Guess[]
 
   userId String
-  User   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   poolId String
   pool   Pool   @relation(fields: [poolId], references: [id])
@@ -56,7 +56,7 @@ model User {
   createdAt DateTime @default(now())
 
   participants Participant[]
-  Pool         Pool[]
+  pool         Pool[]
 }
 
 model Game {
@@ -65,14 +65,18 @@ model Game {
   firstTeamCountryCode  String
   secondTeamCountryCode String
 
-  Guesses Guess[]
+  guesses Guess[]
 }
 
 model Guess {
   id String @id @default(cuid())
 
+  firstTeamPoints  Int
+  secondTeamPoints Int
+  createdAt        DateTime @default(now())
+
   gameId String
-  Game   Game   @relation(fields: [gameId], references: [id])
+  game   Game   @relation(fields: [gameId], references: [id])
 
   participantId String
   participant   Participant @relation(fields: [participantId], references: [id])
