@@ -1,5 +1,4 @@
 import { Center, Text } from 'native-base'
-import { StatusBar } from 'expo-status-bar'
 
 export function SignIn() {
   return (
@@ -7,7 +6,6 @@ export function SignIn() {
       <Text color="white" fontSize={24}>
         Hello World!
       </Text>
-      <StatusBar style="auto" />
     </Center>
   )
 }
