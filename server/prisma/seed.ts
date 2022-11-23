@@ -71,3 +71,6 @@ async function main() {
     },
   })
 }
+
+//executar o main para criar os valores
+main()
