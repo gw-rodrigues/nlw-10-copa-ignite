@@ -29,11 +29,28 @@ import { Center, NativeBaseProvider, Text } from 'native-base'
  */
 import { THEME } from './src/styles/theme'
 
+/**
+ * Install and import fonts
+ * -> npx expo install expo-font @expo-google-fonts/roboto
+ */
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_500Medium,
+  Roboto_700Bold,
+} from '@expo-google-fonts/roboto'
+
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
+  })
+
   return (
     <NativeBaseProvider theme={THEME}>
       <Center flex={1} bgColor="gray.900" alignItems="center">
-        <Text color="black" fontSize={24}>
+        <Text color="white" fontSize={24}>
           Hello World!
         </Text>
         <StatusBar style="auto" />
