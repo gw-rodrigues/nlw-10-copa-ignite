@@ -18,16 +18,12 @@
  *  expo install react-native-safe-area-context@3.3.2
  *
  *  <NativeBaseProvider> -> Igual Context que fornece todas as informações para usar native-base na nossa app
+ *  StatusBar -> barra de cima do dispositivo que contem os icons.
  */
 
-import { StatusBar } from 'expo-status-bar'
-
-import { Center, NativeBaseProvider, Text } from 'native-base'
-
-/**
- * Importing custom theme to use with Native-base
- */
-import { THEME } from './src/styles/theme'
+import { NativeBaseProvider, StatusBar } from 'native-base'
+import { Loading } from './src/components/Loading'
+import { SignIn } from './src/screens/SignIn'
 
 /**
  * Install and import fonts
@@ -40,6 +36,11 @@ import {
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
 
+/**
+ * Importing custom theme to use with Native-base
+ */
+import { THEME } from './src/styles/theme'
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -49,12 +50,12 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={THEME}>
-      <Center flex={1} bgColor="gray.900" alignItems="center">
-        <Text color="white" fontSize={24}>
-          Hello World!
-        </Text>
-        <StatusBar style="auto" />
-      </Center>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <SignIn /> : <Loading />}
     </NativeBaseProvider>
   )
 }
