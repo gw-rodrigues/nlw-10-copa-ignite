@@ -1,3 +1,13 @@
+/**
+ * - PARA SEED FUNCIONAR (adicionar campos/valores nas tabelas/models)precisamos:
+ * -> adicionar no package.json seguinte linha:
+ *  "prisma" : { "seed" : "tsx prisma/seed.ts" },
+ *
+ * -> executar:
+ *  npx prisma db seed
+ *
+ */
+
 import { PrismaClient } from '@prisma/client'
 /** Para iniciar a conexão. com o prisma, fazemos a importação e iniciamos uma instância na variável. */
 const prisma = new PrismaClient()
@@ -45,7 +55,7 @@ async function main() {
         create: {
           firstTeamPoints: 2,
           secondTeamPoints: 1,
-          
+
           /** Podemos fazer várias cadeias de criação e conexão entre models */
           /** Para fazer relação entre tabela/model entre as chaves "estrangeiras" usamos o "connect" - ("diferente de criar valores") */
           participant: {
