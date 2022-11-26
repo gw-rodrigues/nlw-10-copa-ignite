@@ -26,6 +26,11 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 
+import ShortUniqueId from 'short-unique-id'
+
+/** Vamos usar o Zod, nao e so para validação de forms, mais também para validar os valores recebidos através do method "post" body */
+import { z } from 'zod'
+
 /** Vantagem de utilizar prisma, ter inteligencia de auto-complete e ajuda a fazer as queries e utilização das tabelas/models. */
 /** import prisma client */ /** Iniciar o prisma client para conectar com database */
 import { PrismaClient } from '@prisma/client'
@@ -55,6 +60,37 @@ async function bootstrap() {
       return { count }
     },
   )
+
+  fastify.get('/users/count', async () => {
+    const count = await prisma.user.count()
+    return { count }
+  })
+
+  fastify.get('/guesses/count', async () => {
+    const count = await prisma.guess.count()
+    return { count }
+  })
+
+  /** Método "post" é usado quando iremos criar algo e daremos algo de resposta */
+  /** recebe dois parâmetros função async (request, reply (=response)) */
+  fastify.post('/pools', async (request, reply) => {
+    /** Para usar o Zod vamos criar z.Object com variáveis a validar, depois fazer parse do request.body */
+    const createPoolBody = z.object({ title: z.string() })
+    const { title } = createPoolBody.parse(request.body)
+
+    /** Vamos usar short-unique-id para gerar os code de 6 dígitos */
+    const generate = new ShortUniqueId({ length: 6 })
+    const code = String(generate()).toLocaleUpperCase()
+
+    await prisma.pool.create({
+      data: {
+        title,
+        code,
+      },
+    })
+
+    return reply.status(201).send({ title, code })
+  })
 
   //Para funcionar na web e mobile, em mobile (android, etc) devemos adicionar o host.
   await fastify.listen({ port: 3333, host: '0.0.0.0' })
