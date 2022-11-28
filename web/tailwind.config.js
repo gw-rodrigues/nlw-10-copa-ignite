@@ -6,7 +6,17 @@ module.exports = {
       fontFamily: {
         sans: 'Roboto, sans-serif',
       },
-      colors: { gray: { 900: '#121214' } },
+
+      backgroundImage: {
+        app: 'url(/app-bg.svg)',
+      },
+
+      colors: {
+        ignite: {
+          500: '#129e57',
+        },
+        gray: { 900: '#121214' },
+      },
     },
   },
   plugins: [],
