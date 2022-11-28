@@ -41,12 +41,14 @@
   }
  */
 
+import { FormEvent, useState } from 'react'
 import Image from 'next/image'
+import { api } from '../lib/axios'
+
 import appPreviewImage from '../assets/app-preview.png'
 import logoImage from '../assets/logo.svg'
 import userAvatarImage from '../assets/avatares.png'
 import iconCheckImage from '../assets/icon-check.svg'
-import { api } from '../lib/axios'
 
 interface HomeProps {
   poolsCount: number
@@ -58,6 +60,28 @@ export default function Home({
   guessesCount,
   usersCount,
 }: HomeProps) {
+  const [poolTitle, setPoolTitle] = useState('')
+
+  async function createPool(event: FormEvent) {
+    event.preventDefault()
+
+    try {
+      const response = await api.post('/pools', {
+        title: poolTitle,
+      })
+
+      const { code } = response.data
+
+      await navigator.clipboard.writeText(code)
+      alert('Bet created with success, code copied to clipboard.')
+
+      setPoolTitle('')
+    } catch (error) {
+      console.log(error)
+      alert('Fail to create bet, try again!')
+    }
+  }
+
   return (
     <div className="max-w-[1124px] h-screen mx-auto grid gap-28 grid-cols-2 items-center">
       <main>
@@ -74,12 +98,14 @@ export default function Home({
           </strong>
         </div>
 
-        <form className="flex gap-2 mt-10">
+        <form onSubmit={createPool} className="flex gap-2 mt-10">
           <input
-            className="flex-1 px-6 py-4 text-sm bg-gray-800 border border-gray-600 rounded"
+            className="flex-1 px-6 py-4 text-sm text-gray-100 bg-gray-800 border border-gray-600 rounded"
             type="text"
             required
             placeholder="What is the name of your bet?"
+            value={poolTitle}
+            onChange={(event) => setPoolTitle(event.target.value)}
           />
           <button className="px-6 py-4 bg-yellow-500 rounded">
             Create your bet
