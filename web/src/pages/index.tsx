@@ -46,11 +46,18 @@ import appPreviewImage from '../assets/app-preview.png'
 import logoImage from '../assets/logo.svg'
 import userAvatarImage from '../assets/avatares.png'
 import iconCheckImage from '../assets/icon-check.svg'
+import { api } from '../lib/axios'
 
 interface HomeProps {
   poolsCount: number
+  guessesCount: number
+  usersCount: number
 }
-export default function Home({ poolsCount }: HomeProps) {
+export default function Home({
+  poolsCount,
+  guessesCount,
+  usersCount,
+}: HomeProps) {
   return (
     <div className="max-w-[1124px] h-screen mx-auto grid gap-28 grid-cols-2 items-center">
       <main>
@@ -62,8 +69,8 @@ export default function Home({ poolsCount }: HomeProps) {
         <div className="flex items-center gap-2 mt-10">
           <Image src={userAvatarImage} alt="" />
           <strong className="text-xl text-gray-100">
-            <span className="text-ignite-500">+12.592</span> peoples are already
-            using
+            <span className="text-ignite-500">+{usersCount}</span> peoples are
+            already using
           </strong>
         </div>
 
@@ -96,7 +103,7 @@ export default function Home({ poolsCount }: HomeProps) {
           <div className="flex items-center gap-6">
             <Image src={iconCheckImage} alt="" />
             <div className="flex flex-col">
-              <span className="text-2xl font-bold">+2.034</span>
+              <span className="text-2xl font-bold">+{guessesCount}</span>
               <span>Guesses sent</span>
             </div>
           </div>
@@ -113,10 +120,18 @@ export default function Home({ poolsCount }: HomeProps) {
 }
 
 export const getServerSideProps = async () => {
-  const response = await fetch('http://localhost:3333/pools/count')
-  const data = await response.json()
+  const [poolsCountResponse, guessesCountResponse, usersCountResponse] =
+    await Promise.all([
+      api.get('pools/count'),
+      api.get('guesses/count'),
+      api.get('users/count'),
+    ])
 
-  console.log(data)
-
-  return { props: { poolsCount: data.count } }
+  return {
+    props: {
+      poolsCount: poolsCountResponse.data.count,
+      guessesCount: guessesCountResponse.data.count,
+      usersCount: usersCountResponse.data.count,
+    },
+  }
 }
