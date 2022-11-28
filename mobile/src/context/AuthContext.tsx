@@ -19,6 +19,7 @@ export const AuthContext = createContext({} as AuthContextProps)
 
 //criamos um provider para armazenar conteúdo do AuthContext, e partilhar toda aplicação
 // children ??? -> irá ser a nossa app (toda) passada dentro do provider, recebendo as informações
+// -> depois na App adicionar o <AuthContextProvider> ...componentes...  </AuthContextProvider>
 export function AuthContextProvider({ children }: AuthProviderProps) {
   async function signIn() {
     console.log('logged!')
