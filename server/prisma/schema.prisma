@@ -16,8 +16,9 @@ datasource db {
 }
 
 //Criar tabelas = model (modo generico representacao)
-model Pool {
-  id        String   @id @default(cuid()) //@id -> chave primaria, @default -> cuuid() -> chaves geradas automaticamente (cuiid (menor) ou uuid)
+model Poll {
+  id        String   @id @default(cuid())
+  //@id -> chave primaria, @default -> cuuid() -> chaves geradas automaticamente (cuiid (menor) ou uuid)
   title     String
   code      String   @unique //valor único, nao pode repetir
   createdAt DateTime @default(now())
@@ -42,10 +43,10 @@ model Participant {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  poolId String
-  pool   Pool   @relation(fields: [poolId], references: [id])
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id])
 
-  @@unique([userId, poolId]) //definindo vários unique id
+  @@unique([userId, pollId]) //definindo vários unique id
 }
 
 model User {
@@ -56,7 +57,7 @@ model User {
   createdAt DateTime @default(now())
 
   participants Participant[]
-  pool         Pool[]
+  poll         Poll[]
 }
 
 model Game {
