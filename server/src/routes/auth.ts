@@ -8,8 +8,19 @@ import fetch from 'node-fetch'
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
+import { authenticate } from '../plugins/authenticate'
 
 export async function authRoutes(fastify: FastifyInstance) {
+  /**
+   * Obter as info do user através do JWT token
+   * -> irá receber 3 parâmetros - 1 deles e plugin authenticate com JWT
+   *    -> onRequest: [authenticate] - (nome plugin criado)
+   */
+  fastify.get('/me', { onRequest: [authenticate] }, async (request) => {
+    //retorna dados do user no token
+    return { user: request.user } 
+  })
+
   /**
    * Criação do registo do access_token, quando feito login no app mobile através do google auth api
    */
