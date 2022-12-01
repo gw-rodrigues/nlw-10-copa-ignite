@@ -86,8 +86,6 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
      */
     if (response?.type === 'success' && response.authentication?.accessToken) {
       signInWithGoogle(response.authentication.accessToken)
-      // access_token_returned:
-      //ya29.a0AeTM1idFIeHHf6fb345222Q7M0kKnc0DAVmvCE-XHMUw57QhHmQcOmgTFt7163gA6YvL8KXrpVM19E56W1PKEUBS9rEvEzO9bCI2HCETgvmbdGgMHeO3EAx1BWAg5AGnQt0Bkj6Le39RCQTeB8A2k0qXUyCLaCgYKAbASARMSFQHWtWOm2OmQgsmdB2GjAEfo7qDh5Q0163
     }
   }, [response])
 
