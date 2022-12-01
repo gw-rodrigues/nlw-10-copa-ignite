@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^8.2.0",
+    "@fastify/jwt": "^6.5.0",
     "@prisma/client": "^4.6.1",
     "fastify": "^4.10.0",
     "short-unique-id": "^4.4.4",
