@@ -32,6 +32,11 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 
 /**
+ * Instalando JWT para criação de tokens com expiração para validar a conexão do user com backend, depois logado.
+ */
+import jwt from '@fastify/jwt'
+
+/**
  * Importamos as route para fazer register no Fastify
  */
 import { authRoutes } from './routes/auth'
@@ -58,8 +63,18 @@ async function bootstrap() {
    * !!! como deve ser async function devemos usar "await"
    */
 
+  //!!! -> secret deve SEMPRE está variável ambiente!!! file -> .env
+  //precisamos verificar sempre se user está usar a app, mobile sempre que estiver auth com google oauth.
+  //como nao temos acesso a username e password, para mandar sempre para o google, precisamos de outra estratégia.
+  //Vamos user o "JWT Token" - criamos no nosso backend, com data de expiração, partilhamos com nossa app, mobile,
+  //esse token será salvo, cookies, etc, será sempre enviado para backend com validação nas requirições.
+  //depois de backend receber token irá validar e pegar todas as informações do usuário e retorna-lo.
+  await fastify.register(jwt, {
+    secret: 'nlwcopa',
+  })
+
   await fastify.register(authRoutes)
-  await fastify.register(gameRoutes) 
+  await fastify.register(gameRoutes)
   await fastify.register(guessRoutes)
   await fastify.register(pollRoutes)
   await fastify.register(userRoutes)
