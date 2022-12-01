@@ -77,7 +77,26 @@ export async function authRoutes(fastify: FastifyInstance) {
     //Vamos user o "JWT Token" - criamos no nosso backend, com data de expiração, partilhamos com nossa app, mobile,
     //esse token será salvo, cookies, etc, será sempre enviado para backend com validação nas requirições.
     //depois de backend receber token irá validar e pegar todas as informações do usuário e retorna-lo.
+    // !!! nunca colocar senhas do usuário, pode isso e so criptografia, pode ser decriptada.
+    const token = fastify.jwt.sign(
+      {
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      },
+      {
+        sub: user.id,
+        expiresIn: '7 days',
+      },
+    )
+    /**
+     * Podemos passar dois parâmetros/objetos#
+     * -> dados queremos passar
+     * -> parâmetros de configuração
+     *    -> sub - quem criou token
+     *    -> expiresIn - quando irá expirar (iremos usar 7 dias, MAS recomendado user menos dias ou menor)
+     *    -> *caso quisermos um token que nao expire, devemos ver/estudar "Refresh token"
+     */
 
-    return { userInfo }
+    return { token }
   })
 }
