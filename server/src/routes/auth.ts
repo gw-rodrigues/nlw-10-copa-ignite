@@ -53,6 +53,31 @@ export async function authRoutes(fastify: FastifyInstance) {
 
     const userInfo = userInfoSchema.parse(userData)
 
+    //verificamos se existe algum user com id na database (podia ser por email, mais e melhor pelo id google)
+    let user = await prisma.user.findUnique({
+      where: {
+        googleId: userInfo.id,
+      },
+    })
+
+    //caso nao existir vamos criar um novo user com info do google auth
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          googleId: userInfo.id,
+          name: userInfo.name,
+          email: userInfo.email,
+          avatarUrl: userInfo.picture,
+        },
+      })
+    }
+
+    //precisamos verificar sempre se user está usar a app, mobile sempre que estiver auth com google oauth.
+    //como nao temos acesso a username e password, para mandar sempre para o google, precisamos de outra estratégia.
+    //Vamos user o "JWT Token" - criamos no nosso backend, com data de expiração, partilhamos com nossa app, mobile,
+    //esse token será salvo, cookies, etc, será sempre enviado para backend com validação nas requirições.
+    //depois de backend receber token irá validar e pegar todas as informações do usuário e retorna-lo.
+
     return { userInfo }
   })
 }
