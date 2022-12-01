@@ -39,12 +39,37 @@ export async function pollRoutes(fastify: FastifyInstance) {
     const generate = new ShortUniqueId({ length: 6 })
     const code = String(generate()).toLocaleUpperCase()
 
-    await prisma.poll.create({
-      data: {
-        title,
-        code,
-      },
-    })
+    /**
+     * Vamos fazer verificação se user esta logado quando criar a bet
+     *
+     * -> request.user.sub ? id do user que está guardado dentro do token.
+     * -> *.sub - nao existe e da erro no typescript porque e opcional no jwt, há várias formas resolver
+     * -> vamos usar d.ts tipos typescript na pasta @types/fastify-jwt.d.ts
+     */
+    try {
+      await request.jwtVerify()
+
+      await prisma.poll.create({
+        data: {
+          title,
+          code,
+          ownerId: request.user.sub,
+
+          participants: {
+            create: {
+              userId: request.user.sub,
+            },
+          },
+        },
+      })
+    } catch {
+      await prisma.poll.create({
+        data: {
+          title,
+          code,
+        },
+      })
+    }
 
     return reply.status(201).send({ title, code })
   })
