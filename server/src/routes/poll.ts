@@ -13,6 +13,8 @@ import { z } from 'zod'
 
 import { FastifyInstance } from 'fastify'
 import { prisma } from '../lib/prisma'
+import { authenticate } from '../plugins/authenticate'
+import { userRoutes } from './user'
 
 // !!! importante que seja uma "async" function
 export async function pollRoutes(fastify: FastifyInstance) {
@@ -73,4 +75,73 @@ export async function pollRoutes(fastify: FastifyInstance) {
 
     return reply.status(201).send({ title, code })
   })
+
+  /**
+   * Rotas dinâmicas
+   * -> :id (um nome escolha) será dinâmica
+   * -> onRequest:[authenticate] - rota só será acessível ser user for válido/autenticado
+   */
+  fastify.post(
+    '/polls/:id/join',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      const joinPollBody = z.object({ code: z.string() })
+      const { code } = joinPollBody.parse(request.body)
+
+      /**
+       * Com prisma, mesmo fazendo pesquisa, podemos trazer dados de relacionamentos de informação
+       *  - Além de verificar se user nao tem uma bet, verificamos se ele ja faz parte da bet.
+       * -> vamos usar "include" = "JOIN" (sql) - para trazer dados dos participantes (userId = request.user.sub (JWT token))
+       */
+      const poll = await prisma.poll.findUnique({
+        where: {
+          code,
+        },
+        include: {
+          participants: {
+            where: {
+              userId: request.user.sub,
+            },
+          },
+        },
+      })
+
+      if (!poll) {
+        return reply.status(400).send({
+          message: 'Poll not found.',
+        })
+      }
+
+      if (poll.participants.length > 0) {
+        return reply.status(400).send({
+          message: 'You already joined this poll.',
+        })
+      }
+
+      /**
+       * Algumas bet nao tem owner, então o primeiro user que entrar na bet, será adicionado com owner, ownerId
+       * -> usando método "update" do prisma
+       */
+      if (!poll.ownerId) {
+        await prisma.poll.update({
+          where: {
+            id: poll.id,
+          },
+          data: {
+            ownerId: request.user.sub,
+          },
+        })
+      }
+
+      //se user nao faz parte da bet então, iremos adicionar-lo
+      await prisma.participant.create({
+        data: {
+          pollId: poll.id,
+          userId: request.user.sub,
+        },
+      })
+
+      return reply.status(201).send()
+    },
+  )
 }
