@@ -76,13 +76,8 @@ export async function pollRoutes(fastify: FastifyInstance) {
     return reply.status(201).send({ title, code })
   })
 
-  /**
-   * Rotas dinâmicas
-   * -> :id (um nome escolha) será dinâmica
-   * -> onRequest:[authenticate] - rota só será acessível ser user for válido/autenticado
-   */
   fastify.post(
-    '/polls/:id/join',
+    '/polls/join',
     { onRequest: [authenticate] },
     async (request, reply) => {
       const joinPollBody = z.object({ code: z.string() })
