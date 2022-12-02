@@ -9,7 +9,7 @@
 import ShortUniqueId from 'short-unique-id'
 
 /** Vamos usar o Zod, nao e so para validação de forms, mais também para validar os valores recebidos através do method "post" body */
-import { z } from 'zod'
+import { string, z } from 'zod'
 
 import { FastifyInstance } from 'fastify'
 import { prisma } from '../lib/prisma'
@@ -197,4 +197,49 @@ export async function pollRoutes(fastify: FastifyInstance) {
       return { polls }
     },
   )
+
+  /**
+   * Rotas dinâmicas
+   * -> :id (um nome escolha) será dinâmica
+   * -> onRequest:[authenticate] - rota só será acessível ser user for válido/autenticado
+   *
+   * Para extrair a info/id dinâmico
+   * -> const {id} = request.params (nao é o "body")
+   */
+  fastify.get('/polls/:id', { onRequest: [authenticate] }, async (request) => {
+    const getPollsParams = z.object({
+      id: z.string(),
+    })
+
+    const { id } = getPollsParams.parse(request.params)
+
+    const poll = await prisma.poll.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        _count: { select: { participants: true } },
+        participants: {
+          select: {
+            id: true,
+
+            user: {
+              select: {
+                avatarUrl: true,
+              },
+            },
+          },
+          take: 4,
+        },
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    })
+
+    return { poll }
+  })
 }
