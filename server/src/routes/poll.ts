@@ -144,4 +144,62 @@ export async function pollRoutes(fastify: FastifyInstance) {
       return reply.status(201).send()
     },
   )
+
+  fastify.get(
+    '/polls',
+    { onRequest: [authenticate] },
+    async (request, reply) => {
+      /**
+       * Prisma métodos
+       * -> every - todos incluem informação que quero
+       * -> some - pelos menos 1 inclua
+       * -> none - nenhum inclua a informação
+       *
+       * Prisma "_count"
+       * -> _count : { select: { participants: true }} - retorna total linhas, da tabela que foi selecionada (select)
+       * que está relacionada com tabela principal.
+       *
+       * Prisma "select"
+       * -> participants: { select: { id: true, user:{ select: { avatar: true }}}} - dentro do select podemos acessar/buscar
+       * as informações que estejam relaciona com tabela principal.
+       *
+       * Prisma "take" (dentro tabela/include)
+       * -> participants: { select: { id: true, }, take: 4,} - retorna o id do numero de linhas desejadas no "take"
+       *
+       * Prisma "include"
+       * -> include: { owner: true } - retorna todas informações da tabela
+       * -> include: { owner: select: { name: true, age: true }} - retorna apenas as informações especificas no select
+       */
+      const polls = await prisma.poll.findMany({
+        where: {
+          participants: {
+            some: { userId: request.user.sub },
+          },
+        },
+        include: {
+          _count: { select: { participants: true } },
+          participants: {
+            select: {
+              id: true,
+
+              user: {
+                select: {
+                  avatarUrl: true,
+                },
+              },
+            },
+            take: 4,
+          },
+          owner: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+
+      return { polls }
+    },
+  )
 }
