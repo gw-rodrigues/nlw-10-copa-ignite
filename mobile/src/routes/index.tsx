@@ -11,13 +11,28 @@
  * *Assim importamos esse ficheiro no App.tsx para podermos usar a navegação
  */
 
+/**
+ * Nas Routes precisamos ter as informações do user quando está logado, para poder exibir as rotas,
+ * caso nao esteja exibimos a rota de signIn
+ *
+ * -> As informações do user está partilhada através do contexto (hooks - useAuth), que foi obtido através da screen SingIn
+ *
+ */
+
 import { NavigationContainer } from '@react-navigation/native'
+import { useAuth } from '../hooks/useAuth'
+import { SignIn } from '../screens/SignIn'
 import { AppRoutes } from './app.routes'
 
 export function Routes() {
+  /**
+   * Iremos verificar se user está logado caso no contexto o user tenha um nome (name)
+   * Caso nao for user válido ele nao vai ter nome.
+   */
+  const { user } = useAuth()
   return (
     <NavigationContainer>
-      <AppRoutes />
+      {user.name ? <AppRoutes /> : <SignIn />}
     </NavigationContainer>
   )
 }
