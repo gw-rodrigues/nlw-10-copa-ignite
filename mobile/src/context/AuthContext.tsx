@@ -4,6 +4,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import * as Google from 'expo-auth-session/providers/google'
 import * as AuthSession from 'expo-auth-session'
 import * as WebBrowser from 'expo-web-browser'
+import { api } from '../services/api'
 
 //garantir o redirecionamento do navegador, etc...
 WebBrowser.maybeCompleteAuthSession()
@@ -76,7 +77,39 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   }
 
   async function signInWithGoogle(access_token: string) {
-    console.log('token auth -> ', access_token)
+    try {
+      setIsUserLoading(true)
+
+      /**
+       * Iremos enviar para o backend o token gerado pelo google auth depois login válido
+       * Backend irá pegar esse token guardar na base de dados.
+       */
+      const tokenResponse = await api.post('/users', { access_token })
+
+      /**
+       * Para podermos passar o parâmetro de token no "headers" recebido do google auth, validando nosso login, com backend
+       * vamos definir no defaults, headers a authorization com Bearer com access_token
+       * Assim no headers de todas requisições estamos identificando o user que foi criado.
+       */
+      api.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${tokenResponse.data.token}`
+
+      /**
+       * Iremos buscar no backend os dados do user, que foi devolvido pelo backend
+       * O backend com o token do user irá no google oauth e buscar informações deste user
+       */
+      const userInfoResponse = await api.get('/me')
+
+      //Vamos pegar os dados do user e guardar no nosso state
+      //userInfoResponse : { user: { sub:..., name:..., avatarUrl:..., exp:..., iat:..., } }
+      setUser(userInfoResponse.data.user)
+    } catch (error) {
+      console.log(error)
+      throw error
+    } finally {
+      setIsUserLoading(false)
+    }
   }
 
   useEffect(() => {
