@@ -24,7 +24,7 @@
 import { NativeBaseProvider, StatusBar } from 'native-base'
 import { AuthContextProvider } from './src/context/AuthContext'
 import { Loading } from './src/components/Loading'
-import { SignIn } from './src/screens/SignIn'
+import { Routes } from './src/routes'
 
 /**
  * Install and import fonts
@@ -57,7 +57,7 @@ export default function App() {
           backgroundColor="transparent"
           translucent
         />
-        {fontsLoaded ? <SignIn /> : <Loading />}
+        {fontsLoaded ? <Routes /> : <Loading />}
       </AuthContextProvider>
     </NativeBaseProvider>
   )
