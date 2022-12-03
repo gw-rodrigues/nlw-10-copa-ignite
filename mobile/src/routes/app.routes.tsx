@@ -5,6 +5,7 @@ import { PlusCircle, SoccerBall } from 'phosphor-react-native'
  * Platform - serve para identificar qual ambiente no App está a rodar (OS, Android, Etc...)
  */
 import { Platform } from 'react-native'
+import { Find } from '../screens/Find'
 import { New } from '../screens/New'
 import { Polls } from '../screens/Polls'
 
@@ -35,6 +36,8 @@ const { Navigator, Screen } = createBottomTabNavigator()
  * icon externo método de função
  *  -> mudar cor icon - função recebe param "color" que pode ser usado no icon "({ color }) => <PlusCircle color={color} />"
  *  -> tabBarLabel - podemos definir um nome customizado para label dos items da navegação
+ *  -> Quando nao queremos que um item especifico de navegação apareça, podemos adicionar parâmetro button
+ *      que retorna null (nada), assim item nao é renderizado. "tabBarButton: () => null,"
  */
 
 export function AppRoutes() {
@@ -74,7 +77,7 @@ export function AppRoutes() {
           tabBarIcon: ({ color }) => (
             <PlusCircle color={color} size={iconSize} />
           ),
-          tabBarLabel: 'New bet',
+          tabBarLabel: 'NEW BET',
         }}
       />
       <Screen
@@ -84,7 +87,14 @@ export function AppRoutes() {
           tabBarIcon: ({ color }) => (
             <SoccerBall color={color} size={iconSize} />
           ),
-          tabBarLabel: 'My bets',
+          tabBarLabel: 'MY BETS',
+        }}
+      />
+      <Screen
+        name="find"
+        component={Find}
+        options={{
+          tabBarButton: () => null,
         }}
       />
     </Navigator>
