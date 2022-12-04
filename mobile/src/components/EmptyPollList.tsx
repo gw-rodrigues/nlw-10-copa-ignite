@@ -4,7 +4,7 @@ export function EmptyPollList() {
   return (
     <Row flexWrap="wrap" justifyContent="center">
       <Text color="white" fontSize="sm" textAlign="center">
-        You are not yet participating in {'\n'} any bet, how about
+        You are not yet participating in any bet, how about
       </Text>
 
       <Pressable>
