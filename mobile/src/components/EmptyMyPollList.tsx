@@ -8,7 +8,7 @@ export function EmptyMyPollList({ code }: Props) {
   return (
     <Row flexWrap="wrap" justifyContent="center" p={4}>
       <Text color="gray.200" fontSize="sm">
-        This bet has no participants yet, how about
+        This bet has no participants yet, how about of
       </Text>
 
       <Pressable onPress={() => {}}>
@@ -17,7 +17,7 @@ export function EmptyMyPollList({ code }: Props) {
           color="yellow.500"
           textDecoration="underline"
         >
-          of share someone's
+          share someone's
         </Text>
       </Pressable>
 
@@ -25,7 +25,7 @@ export function EmptyMyPollList({ code }: Props) {
         bet code?
       </Text>
 
-      <Text color="gray.200" mr={1}>
+      <Text color="gray.200" mr={1} mt={4} width="100%" textAlign="center">
         Use the code
       </Text>
 
