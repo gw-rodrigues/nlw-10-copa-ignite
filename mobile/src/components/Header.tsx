@@ -8,12 +8,14 @@ interface Props {
   title: string
   showBackButton?: boolean
   showShareButton?: boolean
+  onShare?: () => void
 }
 
 export function Header({
   title,
   showBackButton = false,
   showShareButton = false,
+  onShare,
 }: Props) {
   /**
    * Iremos usar o navigation para voltar para o screen anterior.
@@ -48,7 +50,11 @@ export function Header({
           {title}
         </Text>
 
-        {showShareButton ? <ButtonIcon icon={Export} /> : <EmptyBoxSpace />}
+        {showShareButton ? (
+          <ButtonIcon icon={Export} onPress={onShare} />
+        ) : (
+          <EmptyBoxSpace />
+        )}
       </HStack>
     </HStack>
   )
