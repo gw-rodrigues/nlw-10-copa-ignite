@@ -26,6 +26,7 @@
     "phosphor-react-native": "^1.1.2",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-country-flag": "^1.1.9",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
