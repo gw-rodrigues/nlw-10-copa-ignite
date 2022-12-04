@@ -1,10 +1,10 @@
 import { Heading, HStack, Text, VStack } from 'native-base'
 
-import { PoolPros } from './PollCard'
+import { PollCardProps } from './PollCard'
 import { Participants } from './Participants'
 
 interface Props {
-  data: PoolPros
+  data: PollCardProps
 }
 
 export function PollHeader({ data }: Props) {
@@ -27,7 +27,7 @@ export function PollHeader({ data }: Props) {
 
         <HStack>
           <Text color="gray.200" fontSize="xs" mr={1}>
-            Código:
+            Code:
           </Text>
 
           <Text color="gray.200" fontSize="xs" fontFamily="heading">
