@@ -43,7 +43,7 @@ export function PollCard({ data, ...rest }: Props) {
           </Heading>
 
           <Text color="gray.200" fontSize="xs">
-            Criado por {data.owner.name}
+            Created by {data.owner.name}
           </Text>
         </VStack>
 
