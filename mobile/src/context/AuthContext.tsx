@@ -51,9 +51,17 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
    * - response
    * - promptAsync: função que permite iniciar fluxo de autenticação
    */
+
+  /**
+   * PARA USAR VARIÁVEIS DE AMBIENTE
+   * - precisamos instalar 2 bibliotecas
+   * -> dotenv
+   * -> babel-plugin-inline-dotenv
+   * 
+   * -> npm i dotenv babel-plugin-inline-dotenv
+   */
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId:
-      '649743656568-lekjhu9inln62pkkrv34if36bqttbjsp.apps.googleusercontent.com',
+    clientId: process.env.GOOGLE_CLIENT_ID,
     redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
     scopes: ['profile', 'email'],
   })
