@@ -9,6 +9,7 @@ import { PollCardProps } from '../components/PollCard'
 import { PollHeader } from '../components/PollHeader'
 import { EmptyMyPollList } from '../components/EmptyMyPollList'
 import { Option } from '../components/Option'
+import { Guesses } from '../components/Guesses'
 
 interface RouteParams {
   id: string
@@ -91,6 +92,10 @@ export function Details() {
               onPress={() => setSelectedOption('rating')}
             />
           </HStack>
+
+          {selectedOption === 'guesses' ? (
+            <Guesses poolId={pollsDetails.id} code={pollsDetails.code} />
+          ) : null}
         </VStack>
       ) : (
         <EmptyMyPollList code={pollsDetails.code} />
