@@ -57,8 +57,11 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
    * - precisamos instalar 2 bibliotecas
    * -> dotenv
    * -> babel-plugin-inline-dotenv
-   * 
+   *
    * -> npm i dotenv babel-plugin-inline-dotenv
+   *
+   * PRECISAMOS TAMBÉM ADICIONAR NO babel.config.js
+   * -> plugin: ['inline-dotenv'],
    */
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: process.env.GOOGLE_CLIENT_ID,
