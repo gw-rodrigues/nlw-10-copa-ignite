@@ -219,7 +219,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
       },
       include: {
         _count: { select: { participants: true } },
-        participants: {
+        participants: { 
           select: {
             id: true,
 
