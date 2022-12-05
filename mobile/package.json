@@ -34,7 +34,8 @@
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.3"
+    "@babel/core": "^7.19.3",
+    "@types/country-list": "^2.1.1"
   },
   "overrides": {
     "react": "18.1.0"
