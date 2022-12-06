@@ -41,7 +41,7 @@ export function Guesses({ poolId, code }: Props) {
 
   async function handleGuessConfirm(gameId: String) {
     try {
-      if (!firstTeamPoints.trim() && !secondTeamPoints.trim()) {
+      if (!firstTeamPoints.trim() || !secondTeamPoints.trim()) {
         return toast.show({
           title: 'Please, inform the score of game with your guess.',
           placement: 'top',
