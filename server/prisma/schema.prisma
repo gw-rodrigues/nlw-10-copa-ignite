@@ -78,6 +78,9 @@ model Guess {
   secondTeamPoints Int
   createdAt        DateTime @default(now())
 
+  participantPoints Int @default(0)
+  participantRank Int @default(0)
+
   gameId String
   game   Game   @relation(fields: [gameId], references: [id])
 
