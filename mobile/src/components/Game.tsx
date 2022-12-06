@@ -39,7 +39,7 @@ export function Game({
   const { colors, sizes } = useTheme()
 
   const datePassed = dayjs().isAfter(dayjs(data.date))
-  const hasGuess = data.guess && !datePassed ? true : false
+  const hasGuess = data.guess ? true : false
 
   /**
    * Select other languages to dayjs format
@@ -78,7 +78,7 @@ export function Game({
           code={data.firstTeamCountryCode}
           position="right"
           onChangeText={setFirstTeamPoints}
-          inputDisabled={hasGuess}
+          inputDisabled={hasGuess || datePassed ? true : false}
           inputValue={hasGuess ? data.guess.firstTeamPoints : 0}
         />
 
@@ -88,12 +88,12 @@ export function Game({
           code={data.secondTeamCountryCode}
           position="left"
           onChangeText={setSecondTeamPoints}
-          inputDisabled={hasGuess}
+          inputDisabled={hasGuess || datePassed ? true : false}
           inputValue={hasGuess ? data.guess.secondTeamPoints : 0}
         />
       </HStack>
 
-      {!hasGuess && (
+      {!hasGuess && !datePassed && (
         <Button
           size="xs"
           w="full"
