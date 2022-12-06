@@ -32,7 +32,7 @@ export function Team({
         keyboardType="numeric"
         onChangeText={onChangeText}
         isDisabled={inputDisabled}
-        value={String(inputValue)}
+        defaultValue={String(inputValue)}
       />
 
       {position === 'right' && (
