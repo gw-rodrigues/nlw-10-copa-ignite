@@ -38,6 +38,8 @@ export function Game({
 }: Props) {
   const { colors, sizes } = useTheme()
 
+  const hasGuess = data.guess ? true : false
+
   /**
    * Select other languages to dayjs format
    *
@@ -75,6 +77,8 @@ export function Game({
           code={data.firstTeamCountryCode}
           position="right"
           onChangeText={setFirstTeamPoints}
+          inputDisabled={hasGuess}
+          inputValue={hasGuess ? data.guess.firstTeamPoints : 0}
         />
 
         <X color={colors.gray[300]} size={sizes[6]} />
@@ -83,10 +87,12 @@ export function Game({
           code={data.secondTeamCountryCode}
           position="left"
           onChangeText={setSecondTeamPoints}
+          inputDisabled={hasGuess}
+          inputValue={hasGuess ? data.guess.secondTeamPoints : 0}
         />
       </HStack>
 
-      {!data.guess && (
+      {!hasGuess && (
         <Button
           size="xs"
           w="full"
