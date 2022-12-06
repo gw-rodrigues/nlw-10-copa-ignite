@@ -38,7 +38,8 @@ export function Game({
 }: Props) {
   const { colors, sizes } = useTheme()
 
-  const hasGuess = data.guess ? true : false
+  const datePassed = dayjs().isAfter(dayjs(data.date))
+  const hasGuess = data.guess && !datePassed ? true : false
 
   /**
    * Select other languages to dayjs format
