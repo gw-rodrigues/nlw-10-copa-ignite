@@ -10,6 +10,7 @@ import { PollHeader } from '../components/PollHeader'
 import { EmptyMyPollList } from '../components/EmptyMyPollList'
 import { Option } from '../components/Option'
 import { Guesses } from '../components/Guesses'
+import { Ranking } from '../components/Ranking'
 
 interface RouteParams {
   id: string
@@ -95,7 +96,9 @@ export function Details() {
 
           {selectedOption === 'guesses' ? (
             <Guesses poolId={pollsDetails.id} code={pollsDetails.code} />
-          ) : null}
+          ) : (
+            <Ranking poolId={pollsDetails.id} />
+          )}
         </VStack>
       ) : (
         <EmptyMyPollList code={pollsDetails.code} />
