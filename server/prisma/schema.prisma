@@ -27,7 +27,7 @@ model Poll {
 
   ownerId String? //relacionamentos entre tabelas, "?" -> significa que pode ser null
   owner   User?     @relation(fields: [ownerId], references: [id])
-  Ranking Ranking[]
+  ranking Ranking[]
 }
 
 // DEVEMOS EXECUTAR -> npx prisma migrate dev 
