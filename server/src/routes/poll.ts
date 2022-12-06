@@ -219,7 +219,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
       },
       include: {
         _count: { select: { participants: true } },
-        participants: { 
+        participants: {
           select: {
             id: true,
 
@@ -242,4 +242,40 @@ export async function pollRoutes(fastify: FastifyInstance) {
 
     return { poll }
   })
+
+  fastify.get(
+    '/polls/:id/ranking',
+    { onRequest: [authenticate] },
+    async (request) => {
+      const getPollsParams = z.object({
+        id: z.string(),
+      })
+
+      const { id } = getPollsParams.parse(request.params)
+
+      const poll = await prisma.poll.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          ranking: {
+            select: {
+              id: true,
+              points: true,
+              createdAt: true,
+              participant: {
+                select: {
+                  user: { select: { name: true, avatarUrl: true } },
+                },
+              },
+            },
+            orderBy: { points: 'desc' },
+          },
+        },
+      })
+
+      return { poll }
+    },
+  )
 }
