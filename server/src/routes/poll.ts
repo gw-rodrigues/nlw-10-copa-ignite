@@ -14,7 +14,6 @@ import { string, z } from 'zod'
 import { FastifyInstance } from 'fastify'
 import { prisma } from '../lib/prisma'
 import { authenticate } from '../plugins/authenticate'
-import { userRoutes } from './user'
 
 // !!! importante que seja uma "async" function
 export async function pollRoutes(fastify: FastifyInstance) {
@@ -246,36 +245,89 @@ export async function pollRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/polls/:id/ranking',
     { onRequest: [authenticate] },
-    async (request) => {
+    async (request, reply) => {
       const getPollsParams = z.object({
         id: z.string(),
       })
 
       const { id } = getPollsParams.parse(request.params)
 
-      const poll = await prisma.poll.findUnique({
+      const participantFinishedGuesses = await prisma.participant.findMany({
         where: {
-          id,
+          pollId: id,
         },
         select: {
           id: true,
-          ranking: {
+          points: true,
+          user: {
+            select: { id: true, name: true, avatarUrl: true },
+          },
+          guesses: {
             select: {
               id: true,
-              points: true,
-              createdAt: true,
-              participant: {
+              firstTeamPoints: true,
+              secondTeamPoints: true,
+              game: {
                 select: {
-                  user: { select: { name: true, avatarUrl: true } },
+                  firstTeamPoints: true,
+                  secondTeamPoints: true,
                 },
               },
             },
-            orderBy: { points: 'desc' },
+            where: {
+              game: {
+                date: { lte: new Date() },
+                firstTeamPoints: { gt: -1 },
+                secondTeamPoints: { gt: -1 },
+              },
+              closed: false,
+            },
+            orderBy: {
+              createdAt: 'asc',
+            },
           },
         },
       })
 
-      return { poll }
+      const ranking = participantFinishedGuesses.map((participant) => {
+        let newPoints = participant.points
+
+        if (participant.guesses.length > 0) {
+          participant.guesses.map(async (guess) => {
+            newPoints +=
+              guess.firstTeamPoints === guess.game.firstTeamPoints ? 5 : 0
+            newPoints +=
+              guess.secondTeamPoints === guess.game.secondTeamPoints ? 5 : 0
+
+            try {
+              await prisma.$transaction([
+                prisma.participant.updateMany({
+                  data: { points: Number(newPoints) },
+                  where: { id: participant.id },
+                }),
+                prisma.guess.updateMany({
+                  data: { closed: true },
+                  where: { id: guess.id },
+                }),
+              ])
+            } catch (error) {
+              console.log(error)
+
+              return reply.status(400).send({
+                message: 'Error while updating the ranking.',
+              })
+            }
+          })
+        }
+
+        return {
+          id: participant.id,
+          points: newPoints,
+          user: { ...participant.user },
+        }
+      })
+
+      return { ranking }
     },
   )
 }
