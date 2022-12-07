@@ -26,8 +26,7 @@ model Poll {
   participants Participant[] //Chave entrangeira
 
   ownerId String? //relacionamentos entre tabelas, "?" -> significa que pode ser null
-  owner   User?     @relation(fields: [ownerId], references: [id])
-  ranking Ranking[]
+  owner   User?   @relation(fields: [ownerId], references: [id])
 }
 
 // DEVEMOS EXECUTAR -> npx prisma migrate dev 
@@ -44,11 +43,13 @@ model Participant {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  pollId  String
-  poll    Poll      @relation(fields: [pollId], references: [id])
-  Ranking Ranking[]
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id])
 
-  @@unique([userId, pollId]) //definindo vários unique id
+  rankingId String  
+  ranking   Ranking @relation(fields: [rankingId], references: [id])
+
+  @@unique([userId, pollId, rankingId]) //definindo vários unique id
 }
 
 model User {
@@ -70,6 +71,9 @@ model Game {
   firstTeamCountryCode  String
   secondTeamCountryCode String
 
+  firstTeamPoints  Int @default(-1)
+  secondTeamPoints Int @default(-1)
+
   guesses Guess[]
 }
 
@@ -79,6 +83,7 @@ model Guess {
   firstTeamPoints  Int
   secondTeamPoints Int
   createdAt        DateTime @default(now())
+  closed           Boolean  @default(false)
 
   gameId String
   game   Game   @relation(fields: [gameId], references: [id])
@@ -90,13 +95,7 @@ model Guess {
 }
 
 model Ranking {
-  id            String      @id @default(cuid())
-  pollId        String
-  poll          Poll        @relation(fields: [pollId], references: [id])
-  participantId String
-  participant   Participant @relation(fields: [participantId], references: [id])
-  points        Int
-  createdAt     DateTime    @default(now())
-
-  @@unique([pollId, participantId])
+  id          String        @id @default(cuid())
+  points      Int           @default(0)
+  Participant Participant[]
 }
