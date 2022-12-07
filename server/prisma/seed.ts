@@ -22,10 +22,6 @@ async function main() {
     },
   })
 
-  const ranking = await prisma.ranking.create({
-    data: { points: 0 },
-  })
-
   const poll = await prisma.poll.create({
     data: {
       title: 'Example Pool',
@@ -36,7 +32,6 @@ async function main() {
       participants: {
         create: {
           userId: user.id,
-          rankingId: ranking.id,
         },
       },
     },
@@ -65,10 +60,9 @@ async function main() {
           /** Para fazer relação entre tabela/model entre as chaves "estrangeiras" usamos o "connect" - ("diferente de criar valores") */
           participant: {
             connect: {
-              userId_pollId_rankingId: {
+              userId_pollId: {
                 userId: user.id,
                 pollId: poll.id,
-                rankingId: ranking.id,
               },
             },
           },
