@@ -46,10 +46,9 @@ model Participant {
   pollId String
   poll   Poll   @relation(fields: [pollId], references: [id])
 
-  rankingId String  
-  ranking   Ranking @relation(fields: [rankingId], references: [id])
+  points Int @default(0)
 
-  @@unique([userId, pollId, rankingId]) //definindo vários unique id
+  @@unique([userId, pollId]) //definindo vários unique id
 }
 
 model User {
@@ -92,10 +91,4 @@ model Guess {
   participant   Participant @relation(fields: [participantId], references: [id])
 
   @@unique([participantId, gameId])
-}
-
-model Ranking {
-  id          String        @id @default(cuid())
-  points      Int           @default(0)
-  Participant Participant[]
 }
