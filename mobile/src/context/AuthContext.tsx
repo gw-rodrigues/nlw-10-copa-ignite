@@ -96,7 +96,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
        * Backend irá pegar esse token guardar na base de dados.
        */
       const tokenResponse = await api.post('/users', { access_token })
-
+      console.log(tokenResponse.data.token)
       /**
        * Para podermos passar o parâmetro de token no "headers" recebido do google auth, validando nosso login, com backend
        * vamos definir no defaults, headers a authorization com Bearer com access_token
