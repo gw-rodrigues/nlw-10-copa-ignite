@@ -18,7 +18,7 @@ export async function authRoutes(fastify: FastifyInstance) {
    */
   fastify.get('/me', { onRequest: [authenticate] }, async (request) => {
     //retorna dados do user no token
-    return { user: request.user } 
+    return { user: request.user }
   })
 
   /**
