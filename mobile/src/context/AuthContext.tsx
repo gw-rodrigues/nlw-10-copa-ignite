@@ -10,6 +10,7 @@ import { api } from '../services/api'
 WebBrowser.maybeCompleteAuthSession()
 
 interface UserProps {
+  sub: string
   name: string
   avatarUrl: string
 }
