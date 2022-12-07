@@ -1,5 +1,6 @@
 import { FlatList, useToast } from 'native-base'
 import { useEffect, useState } from 'react'
+
 import { api } from '../services/api'
 import { EmptyRakingList } from './EmptyRakingList'
 import { Loading } from './Loading'
@@ -20,7 +21,7 @@ export function Ranking({ poolId }: Props) {
       setIsLoading(true)
 
       const response = await api.get(`/polls/${poolId}/ranking`)
-      setPollRanking(response.data.poll.ranking)
+      setPollRanking(response.data.ranking)
     } catch (error) {
       console.log(error)
       toast.show({
@@ -44,7 +45,9 @@ export function Ranking({ poolId }: Props) {
     <FlatList
       data={pollRanking}
       keyExtractor={(item) => item.id}
-      renderItem={({ item }) => <RankingCard data={item} />}
+      renderItem={({ item, index }) => (
+        <RankingCard data={item} rank={index + 1} />
+      )}
       _contentContainerStyle={{ pb: 32 }}
       ListEmptyComponent={() => <EmptyRakingList />}
     />
