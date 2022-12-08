@@ -287,38 +287,62 @@ export async function pollRoutes(fastify: FastifyInstance) {
             },
           },
         },
+        orderBy: { points: 'desc' },
       })
+
+      async function updateParticipantPoints(id: string, points: number) {
+        try {
+          await prisma.$transaction([
+            prisma.participant.updateMany({
+              data: { points },
+              where: { id },
+            }),
+          ])
+        } catch (error) {
+          console.log(error)
+
+          return reply.status(400).send({
+            message: 'Error while updating the ranking.',
+          })
+        }
+      }
+
+      async function closeParticipantGuess(id: string) {
+        try {
+          await prisma.$transaction([
+            prisma.guess.updateMany({
+              data: { closed: true },
+              where: { id },
+            }),
+          ])
+        } catch (error) {
+          console.log(error)
+
+          return reply.status(400).send({
+            message: 'Error while updating the ranking.',
+          })
+        }
+      }
+
+      let hasParticipantFinishedGuesses = false
 
       const ranking = participantFinishedGuesses.map((participant) => {
         let newPoints = participant.points
 
         if (participant.guesses.length > 0) {
+          hasParticipantFinishedGuesses = true
+
           participant.guesses.map(async (guess) => {
             newPoints +=
               guess.firstTeamPoints === guess.game.firstTeamPoints ? 5 : 0
             newPoints +=
               guess.secondTeamPoints === guess.game.secondTeamPoints ? 5 : 0
 
-            try {
-              await prisma.$transaction([
-                prisma.participant.updateMany({
-                  data: { points: Number(newPoints) },
-                  where: { id: participant.id },
-                }),
-                prisma.guess.updateMany({
-                  data: { closed: true },
-                  where: { id: guess.id },
-                }),
-              ])
-            } catch (error) {
-              console.log(error)
-
-              return reply.status(400).send({
-                message: 'Error while updating the ranking.',
-              })
-            }
+            closeParticipantGuess(guess.id)
           })
         }
+
+        updateParticipantPoints(participant.id, newPoints)
 
         return {
           id: participant.id,
@@ -326,6 +350,10 @@ export async function pollRoutes(fastify: FastifyInstance) {
           user: { ...participant.user },
         }
       })
+
+      if (hasParticipantFinishedGuesses) {
+        ranking.sort((a, b) => b.points - a.points)
+      }
 
       return { ranking }
     },
