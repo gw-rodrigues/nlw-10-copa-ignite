@@ -27,11 +27,11 @@ export function PollHeader({ data }: Props) {
 
         <HStack>
           <Text color="gray.200" fontSize="xs" mr={1}>
-            Code:
+            Created by
           </Text>
 
           <Text color="gray.200" fontSize="xs" fontFamily="heading">
-            {data.code}
+            {data.owner.name}
           </Text>
         </HStack>
       </VStack>
